@@ -1,0 +1,406 @@
+<style>    
+   /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+  .row.content { 
+    bottom: 0;
+    top:0;
+  }
+    
+  .dashIconBar{
+    padding: 3%;
+    width: 35px;
+    height:35px;
+  }
+    
+  .topNav{ 
+    text-align:right;
+    padding: 2%;
+    margin-top: -30px;
+    margin-right: -30px;
+    margin-left: -15px;
+  }
+    
+  .userImage{
+    width:40px;
+    height:40px;
+  }
+  
+  .well.wellTop{
+    height: 165px;
+    line-height: 3.5;
+  }
+     
+  .well.wellTop p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px; 
+    font-size: 16px;
+  }
+  
+  @media only screen and (max-width:650px){
+    .well.wellTop {
+      height: 100%;
+    }
+  }
+  
+    ul {
+     list-style-type: none;
+     margin: 0;
+     padding: 0;
+    }
+    
+    li {
+     display: inline;
+     margin-right: 10px;
+     font-size: 22px;
+    }
+    
+    
+    /* ---- Side navbar ------ */
+    
+    
+    /* 
+    .dashboard, .todoList, .courses {
+         color: #337ab7;
+         border-radius: 4px;
+         position: relative;
+         display: block;
+         padding: 10px 15px;
+    }
+        
+    .dashboard:active {
+       background-color: #337ab7;
+       color: #fff;
+    }
+    */ 
+    
+    html,body { 
+      ;
+       min-height:100%; 
+    }
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      margin-left: -15px;
+      min-height:950px;
+      width: 18%;
+    }
+    
+     
+   
+    
+    .logo {
+      width: 150px;
+      height: 150px;
+    }
+    
+    .logoSmall{
+       width: 40px;
+       height: 40px;
+       padding-bottom: 0.5em;
+    }
+    
+    .RbtnMargin {
+       position:relative;
+       top:0;
+    }
+    
+    <! --- Export calendar  --->
+    .comp {
+      width: 50px;
+      height: 50px;
+    }
+    .title {
+       color: #337ab7;
+    }
+    
+    .title h4{
+       font-size: 42px;
+    }
+    .exportContent img{
+       display:block;
+       margin:auto;
+       padding-top: 5%;
+       padding-bottom: 5%;
+    }
+    
+    
+    <!-- drop shadow --> 
+    * {
+    box-sizing: border-box;
+    }
+    
+    
+    .row{
+      margin: auto;
+    }
+    
+    .cors{
+      font-size:14px;
+      text-align:left;
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom:-25px;
+    }
+    .taskDash{
+      font-size:14px;
+      text-align:left;
+      position: relative;
+      display: block;
+      padding: 10px 15px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      
+    }
+    
+    /* Create three equal columns that floats next to each other */
+    .column {
+    float: left;
+    width: 30%;
+    padding: 10px;
+    text-align:center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 15px;
+    margin-top: 5%;
+    height: auto;
+    
+    }
+   
+    /* Clear floats after the columns */
+    .row:after {
+    content: "";
+    display: table;
+    clear: both;
+    }
+    
+ 
+    
+ /* NEW DASHBOARD CSS STYLES */
+.col {
+  float: left;
+  width: 25%;
+  padding: 0 10px; 
+}
+.col.small {
+width: 18%;
+}
+.rows {
+margin: 0 -5px;
+}
+
+.rows:after {
+  content: "";
+  display: table;
+  clear: both;
+
+
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .col {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+.row.content{
+   background-color: white;
+
+}
+/* Style the counter cards */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  background-color: #FAF7FF	;
+  border-radius: 5px;
+  height: 455px;
+}
+.small-chart{
+  padding: 16px;
+  text-align: center;
+  background-color: #FAF7FF;
+}
+.card.small-chart{
+ background-color: white;
+ box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0);
+ margin-top: -8%;
+}
+.chart {
+   background-color: #FAF7FF;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+   padding: 3%;
+   border-radius: 5px;
+   margin-bottom: 15%;
+}
+.chart--title {
+    font-size: 10px;
+    text-align: left;
+    padding-left: 5%;
+    line-height: 1.5;
+}
+.chart--num {
+font-size: 42px;
+line-height: 75px;
+font-weight: lighter;
+}
+.chart.assg  {
+border-bottom-style: solid;
+border-bottom-width: 4px;
+border-bottom-color: #00B4FF;
+}
+.chart.task {
+border-bottom-style: solid;
+border-bottom-width: 4px;
+border-bottom-color: #337AB7;
+}
+.chart.view {
+border-bottom-style: solid;
+border-bottom-width: 4px;
+border-bottom-color: #EEE8A9;
+}
+.card.assg{
+padding-bottom: 2%;
+border-bottom-style: solid;
+border-bottom-width: 4px;
+border-bottom-color: #00B4FF;
+overflow-y: scroll;
+}
+.card.task{
+padding-bottom: 2%;
+border-bottom-style: solid;
+border-bottom-width: 4px;
+border-bottom-color: #337AB7;
+overflow-y: scroll;
+}
+.card.view{
+padding-bottom: 2%;
+border-bottom-style: solid;
+border-bottom-width: 4px;
+border-bottom-color: #EEE8A9;
+}
+
+.twoCol{
+  margin-top:3%;
+  float: left;
+  width: 44.5%;
+  margin-left: 2%;
+  
+}
+
+.cards{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  background-color: #FAF7FF	;
+  border-radius: 5px;   
+  min-height: 365px;
+  }
+.cols{
+  float: left;
+  padding: 10px;
+ 
+  
+}  
+.cols.circle {
+width:70%;
+}
+
+.cols.charts {
+margin-top:-9%;
+width:30%;
+}
+
+.avgChart{
+  padding: 2%;
+  margin-bottom: 20%;
+  border: 2px solid white;
+  text-align: center;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #00B4FF;
+  padding-bottom: 15%;
+}
+.avgchart--title{
+    font-weight: normal;
+    font-size: 12px;
+    text-align: left;
+    padding:5%;
+    line-height: 1.5;
+    margin:auto;
+}
+.avgchart--num{
+   font-weight: lighter;
+   font-size: 32px;
+    text-align: left;
+    padding: 5%;
+    line-height: 1.5;
+    margin:auto;
+}
+    
+/*  Progress bar - Circle */ 
+svg{
+position: relative;
+width: 150px;
+height: 150px;
+z-index: 1000;
+}
+svg circle{
+width: 100%;
+height: 100%;
+fill:none;
+/* green: 98EC87   yellow:#F9F871  red: #C74E4E  */
+stroke: #98EC87;
+stroke-width: 10;
+stroke-lincecap: round;
+transform: translate(5px,5px);
+
+}
+
+svg circkle:nth-childe(2){
+stroke-dasharray: 220;
+stroke-dashoffset: 220;
+}
+.cardProgress{
+margin-top: 15%;
+}
+  
+    
+    @media (max-width: 1300px) { /*breakpoint*/
+       .col.small {
+           width:auto;
+           height:auto;
+          
+       }
+       .twoCol{ 
+         float: none;
+         width: auto;
+       }
+       .card.chart-small{
+         width:auto;
+         height:100%;
+       }
+       .col{
+       width:auto;
+           height:auto;
+       }
+    }
+   
+  
+     /* On small screens, set height to 'auto' for the grid */
+    @media screen and (max-width: 767px) {
+      .row.content {height: auto;} 
+    }
+   
+    
+   
+    
+    </style>
