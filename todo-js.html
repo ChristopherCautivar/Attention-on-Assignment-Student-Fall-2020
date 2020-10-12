@@ -125,10 +125,9 @@ $(document).ready(function(){
    */
   function showTasks(tasks) {
     var list = $('#tasks').empty();
-    // TODO: WORKING HERE This is a test
-    // I'll also make a change here, then merge them.
     tasks.sort(function(a,b){
-        return Number(a.notes[0]) - Number(b.notes[0])
+        // Greater score is sorted to front
+        return Number(b.notes[0]) - Number(a.notes[0])
     })
     if (tasks.length > 0) {
       tasks.forEach(function(task){
