@@ -125,6 +125,11 @@ $(document).ready(function(){
    */
   function showTasks(tasks) {
     var list = $('#tasks').empty();
+    // TODO: WORKING HERE This is a test
+    // I'll also make a change here, then merge them.
+    tasks.sort(function(a,b){
+        return Number(a.notes[0]) - Number(b.notes[0])
+    })
     if (tasks.length > 0) {
       tasks.forEach(function(task){
         var item = $('<label>');
@@ -185,11 +190,14 @@ $(document).ready(function(){
     var taskListId = $('#tasklist').val();
     var titleTextBox = $('#task-title');
     var title = titleTextBox.val();
+    var note = String(Number($('#urgent').prop("checked") ? $('#urgent').val() : $('#not-urgent').val()) + 
+        Number($('#important').prop("checked") ? $('#important').val() : $('#not-important').val()));
+    google.script.run.withSuccessHandler
     google.script.run.withSuccessHandler(function() {
       titleTextBox.val('');
       loadTasks();
     }).withFailureHandler(showError)
-      .addTask(taskListId, title);
+      .addTask(taskListId, title, note);
     return false;
   }
   
@@ -210,8 +218,7 @@ $(document).ready(function(){
   }
     $('#tasklist').bind('change', loadTasks);
     $('#new-task').bind('submit', onNewTaskFormSubmit);
-    
-     $('#create-button').on('click',function(){
+    $('#create-button').on('click',function(){
         var taskList = $('#tasklist-title').val();
         console.log("button clicked");
         var titleTextBox = $('#tasklist-title');
