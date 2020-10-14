@@ -14,7 +14,7 @@ function doGet(e) {
   return HtmlService.createTemplateFromFile(e.parameter['page']).evaluate().setTitle('GAAME');
 }
 
-function userAddEntry(aname,course, duedate, milestones) {
+function userAddEntry(aname, course, duedate, milestones) {
   var userEmail = getEmail();
   var calendar = CalendarApp.getCalendarsByName(userEmail)[0];
   var event = calendar.createEvent(aname + ": is Due Today", new Date(duedate),new Date(duedate));
@@ -50,9 +50,14 @@ function getValuesFromForm(form){
   var id = "1ZTBkSj5Mqpn8WMCZXeg3gHh8EehHXZ3m0NJURoOSqp0";
   var ss = SpreadsheetApp.openById(id);
   var ws = ss.getSheetByName("Assignments");
-  ws.appendRow([getEmail(), form["title"], form["course"], form["url"], form["duedate"], form["milestone1"], form["date1"],
-                form["milestone2"], form["date2"], form["milestone3"], form["date3"]]);
+  var duedate = form["duedate"] + " " + form["duedatetime"];
+  ws.appendRow([getEmail(), form["title"], form["course"], form["url"], duedate , form["milestone1"], form["date1"],
+                  form["milestone2"], form["date2"], form["milestone3"], form["date3"], form["milestone4"], form["date4"], form["milestone5"], form["date5"]]);
+  ws.getRange(ws.getLastRow(), 16, 1, 5).insertCheckboxes();
+  ws.getRange(ws.getLastRow(), 21, 1, 1).setValue("FALSE");
+  //ws.getActiveRange().appendinsertCheckboxes();
 }
+
 function getColumnsFromSheet() {
   var id = "1ZTBkSj5Mqpn8WMCZXeg3gHh8EehHXZ3m0NJURoOSqp0";
   var ss = SpreadsheetApp.openById(id);
@@ -70,6 +75,106 @@ function deleteAssignByRow(rowId) {
   
   return 1; 
 }
+
+/**
+ * Sets the value of the checkbox in the spreasheet when the user toggles a checkbox
+ * @Returns array of course assignment's title, course name, followed by milestones, milestone checkbox statuses
+ */
+function getMilestones(title, course) {
+  var id = "1ZTBkSj5Mqpn8WMCZXeg3gHh8EehHXZ3m0NJURoOSqp0";
+  var ss = SpreadsheetApp.openById(id);
+  var ws = ss.getSheetByName("Assignments");
+  var milestones = [];
+  var studentEmail = Session.getActiveUser().getEmail();
+  var values = ws.getDataRange().getValues();
+  //var courses = JSON.parse(values) || [];
+  for(var i = 0; i < values.length;i++){
+    if (values[i][0] === studentEmail && values[i][2] === course && values[i][1] === title) {
+        var current_row = values[i];
+        milestones = [values[i][1], values[i][2], current_row[5], current_row[7], current_row[9], current_row[11], 
+        current_row[13], current_row[15], current_row[16], current_row[17], current_row[18], current_row[19]];
+        
+        Logger.log(milestones);
+    }
+  }
+  
+  
+  return JSON.stringify(milestones); 
+}
+
+/**
+ * Sets the value of the checkbox in the spreasheet when the user toggles a checkbox
+ * @Returns the status of true when a checkbox is checked or false if it is not checked.
+ */
+
+function setMilestones(milestoneid, assignmentTitle, course){
+  var id = "1ZTBkSj5Mqpn8WMCZXeg3gHh8EehHXZ3m0NJURoOSqp0";
+  var ss = SpreadsheetApp.openById(id);
+  var ws = ss.getSheetByName("Assignments");
+  var milestone = [];
+  var studentEmail = Session.getActiveUser().getEmail();
+  console.log(studentEmail);
+  var values = ws.getDataRange().getValues();
+  var isCheckFalse = true;
+  //var mid = milestoneid + 14;
+  //var milestoneid = pasreInt(assignmentId.charAt(assignmentId.length - 1));
+  //var status;
+  //var courses = JSON.parse(values) || [];
+  for(var i = 0; i < values.length;i++){
+    if (values[i][0] === studentEmail && values[i][2] === course && values[i][1] === assignmentTitle) {
+        var current_row = values[i];
+        // milstone ids
+        // 2 3 4 5 6
+        //var status =   ws.getRange( i + 1, 16, 1, 5).insertCheckBoxes(); // selects all five checkboxes
+         var status = ws.getRange( i + 1, milestoneid + 14 , 1, 1); // seclect one cell - chnage the second parametr to change milestone within same row
+         if (!status.isChecked()) {
+           status.setValue('TRUE');
+         } else {
+           status.setValue('FALSE');
+         }
+         Logger.log(status.isChecked());
+    }
+  }
+  
+  
+  return status.isChecked(); 
+}
+
+
+// set late status
+function setLateStatus(assignmentTitle, course, isLate){
+  var id = "1ZTBkSj5Mqpn8WMCZXeg3gHh8EehHXZ3m0NJURoOSqp0";
+  var ss = SpreadsheetApp.openById(id);
+  var ws = ss.getSheetByName("Assignments");
+  var milestone = [];
+  var studentEmail = Session.getActiveUser().getEmail();
+  
+  var values = ws.getDataRange().getValues();
+  var isCheckFalse = true;
+  for(var i = 0; i < values.length;i++){
+    if (values[i][0] === studentEmail && values[i][2] === course && values[i][1] === assignmentTitle) {
+        var current_row = values[i];
+        // milstone ids
+        // 2 3 4 5 6
+        //var status =   ws.getRange( i + 1, 16, 1, 5).insertCheckBoxes(); // selects all five checkboxes
+         var latestatus = ws.getRange( i + 1, 21 , 1, 1); // seclect one cell - chnage the second parametr to change milestone within same row
+         if (isLate === true) {
+           latestatus.setValue('TRUE');
+         } else {
+           latestatus.setValue('FALSE');
+         }
+         //Logger.log(latestatus.val);
+    }
+  }
+  
+  
+  return latestatus.getValue(); 
+}
+
+
+
+
+
 
 /**
  * Returns the ID and name of every task list in the user's account.
@@ -132,9 +237,8 @@ function setCompleted(taskListId, taskId, completed) {
  * @param {String} taskListId The ID of the task list.
  * @param {String} title The title of the new task.
  */
-function addTask(taskListId, title, notes = "") {
+function addTask(taskListId, title) {
   var task = Tasks.newTask().setTitle(title);
-  task.notes = notes + " Eisenhower Matrix Score";
   Tasks.Tasks.insert(task, taskListId);
 }
 

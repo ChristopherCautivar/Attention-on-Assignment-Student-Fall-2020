@@ -18,10 +18,11 @@ $(document).ready(function(){
     function loadData(data){
     var count = 0;
        var courses = JSON.parse(data) || [];
-       
+       var userCourses = [];
        $('.coursesList').empty();
        courses.forEach(function(course){
            if (course[0] === window.email) {
+              userCourses.push(course);
               var newDate = "";
               if (course[4] !== "") {
                  var date = new Date(course[4]);
@@ -32,13 +33,43 @@ $(document).ready(function(){
            } 
        })
        
+       console.log("courses I'm taking..." + userCourses.length);
+       var lateAssgn = 0;
+      
+       for (var i = 0; i < userCourses.length; i++) {
+         if (userCourses[i][20] == true) {
+           lateAssgn += 1;
+         }
+       }
+       updateProgressbar(lateAssgn, userCourses.length);
+       
+       
        $(".chart--num.assg").html(count);
    
     
     }
     //loadData();
     
-  
+  function updateProgressbar(lateAssignments, totalAssignments) {
+    var strokewidth = (4 * 100) / totalAssignments;
+    var progPercent = document.querySelector('.progress-circle-prog');
+    progPercent.style.strokeDasharray = lateAssignments * (strokewidth) + ' 220';
+    var percentLabel = document.querySelector('.progress-text');
+    
+    $('.progress-text').data('progress', lateAssignments);
+    
+    var start = new Date().getTime();
+    
+      setTimeout( function() {
+        var now = (new Date().getTime()) - start;
+        var progress = now / 700;
+        percentLabel.innerHTML = Math.floor(lateAssignments / totalAssignments * 100) + '%';
+        if (progress > 1) {
+          setTimeout(arguments.callee, 10);
+        }
+    }, 10);
+    
+  }
     
   /**
    * Load the available task lists.
