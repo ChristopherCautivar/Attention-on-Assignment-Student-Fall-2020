@@ -50,7 +50,7 @@ $(document).ready(function(){
     }
     //loadData();
     
-  function updateProgressbar(lateAssignments, totalAssignments) {
+function updateProgressbar(lateAssignments, totalAssignments) {
     var strokewidth = (4 * 100) / totalAssignments;
     var progPercent = document.querySelector('.progress-circle-prog');
     progPercent.style.strokeDasharray = lateAssignments * (strokewidth) + ' 220';
@@ -63,7 +63,25 @@ $(document).ready(function(){
       setTimeout( function() {
         var now = (new Date().getTime()) - start;
         var progress = now / 700;
-        percentLabel.innerHTML = Math.floor(lateAssignments / totalAssignments * 100) + '%';
+       
+        var percentage = Math.floor( ( totalAssignments - lateAssignments ) / totalAssignments * 100);
+        
+
+        percentLabel.innerHTML = Math.floor( ( totalAssignments - lateAssignments ) / totalAssignments * 100) + '%';
+        console.log("late assignments: " + lateAssignments);
+       
+        if (percentage >= 80) {
+        // green
+          progPercent.style.stroke = "#98EC87";
+        }
+        else if (percentage < 80 && percentage >= 60 ) {
+        // yellow
+          progPercent.style.stroke = "#F9F871";
+        } else if (percentage < 60) {
+        // red
+          progPercent.style.stroke = "#C74E4E";
+        } 
+        
         if (progress > 1) {
           setTimeout(arguments.callee, 10);
         }
