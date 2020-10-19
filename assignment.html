@@ -40,7 +40,7 @@
    
   </script>
 
-<?!= include ("todo-css"); ?>
+<?!= include ("assignment-css"); ?>
   <script src="js/jquery.min.js"></script>
 </head>
 
@@ -103,10 +103,11 @@
         <p>Add your assignments here and check them off when completed to see your progress</p>
   </div> 
   <!--  BUTTON CREATE ASSIGNMENT -->
-  <div class="col s12"> 
+  <div class="col s12" id="btn-line"> 
       <!-- <button class="btn waves-effect waves-light openBtn" type="button" >Create Assignment </button>-->
-      <button data-target="modal1" class="btn modal-trigger openBtn">Create Assignment </button>
-  
+      <button data-target="modal1" class="btn modal-trigger openBtn pull-left">Create Assignment </button>
+      <button data-target="modal2" class="btn modal-trigger btn-primary" id="create-button" >Creat new task list</button>
+      <!--<input type="submit" class="btn btn-sm btn-primary" id="create-button" value="Create new task list"/>-->
   </div>
   <!--  BUTTON CREATE ASSIGNMENT END -->
   
@@ -125,24 +126,12 @@
                 <select id="tasklist" class="browser-default">
                   <option></option>
                 </select>
-                <input type="text" name="task-title" id="tasklist-title" placeholder="Create new task list"/>
-                <input type="submit" class="btn btn-sm btn-primary" id="create-button" value="Create"/>
+                <!-- <input type="submit" class="btn btn-sm btn-primary" id="create-button" value="Create new task list"/> -->
                 <div class="well-box">
                   <div>
                     <form name="new-task" id="new-task">
                       <label for="task-title">Add a new task:</label>
                       <input type="text" name="task-title" id="task-title" placeholder="Add new task"/>
-                      <br>
-                      <input type="radio" name="urgent" id="urgent" value="2" />
-                      <label for="urgent">Urgent</label>
-                      <input type="radio" name="urgent" id="not-urgent" value="0" />
-                      <label for="not-urgent">Not Urgent</label>
-                      <br>
-                      <input type="radio" name="important" id="important" value="1" />
-                      <label for="important">Important</label>
-                      <input type="radio" name="important" id="not-important" value="0" />
-                      <label for="not-important">Not Important</label>
-                      <br>
                       <input type="submit" name="add" class="btn btn-sm btn-primary" id="add-button" value="Add" />
                     </form>
                   </div>
@@ -220,7 +209,28 @@
     </div>
   </div>
    
-   
+   <!-- MODAL TWO --> 
+ 
+  <div id="modal2" class="modal">
+    <div class="modal-content-form">
+      <button type="button" class="modal-action modal-close" style="float:right;">&times;</button>
+      <h4 class="modal-title" style="color: #337ab7; font-size: 24px; font-weight: bold;">Create your task list</h4>
+      
+      <!-- content of modal -->
+               <form id="task-form">
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Title of the task list</label>
+                      <input type="text" name="task-title" id="tasklist-title" placeholder="Create new task list"/>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary modal-action modal-close" id="create-list-btn">Create List</button>
+                  </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="modal-action modal-close" style="float:right;">Close</button>
+    </div>
+  </div>
+
   
   </div>
    <!-- CONTENT END --> 
