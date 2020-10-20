@@ -256,6 +256,10 @@ $(document).ready(function(){
    */
   function showTasks(tasks) {
     var list = $('#tasks').empty();
+    tasks.sort(function(a,b){	
+        // Greater score is sorted to front	
+        return Number(b.notes[0]) - Number(a.notes[0])	
+    })
     if (tasks.length > 0) {
       tasks.forEach(function(task){
         var item = $('<label>');
