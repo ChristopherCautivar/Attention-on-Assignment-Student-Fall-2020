@@ -18,10 +18,11 @@ $(document).ready(function(){
     function loadData(data){
     var count = 0;
        var courses = JSON.parse(data) || [];
-       
+       var userCourses = [];
        $('.coursesList').empty();
        courses.forEach(function(course){
            if (course[0] === window.email) {
+              userCourses.push(course);
               var newDate = "";
               if (course[4] !== "") {
                  var date = new Date(course[4]);
@@ -32,13 +33,61 @@ $(document).ready(function(){
            } 
        })
        
+       console.log("courses I'm taking..." + userCourses.length);
+       var lateAssgn = 0;
+      
+       for (var i = 0; i < userCourses.length; i++) {
+         if (userCourses[i][20] == true) {
+           lateAssgn += 1;
+         }
+       }
+       updateProgressbar(lateAssgn, userCourses.length);
+       
+       
        $(".chart--num.assg").html(count);
    
     
     }
     //loadData();
     
-  
+function updateProgressbar(lateAssignments, totalAssignments) {
+    var strokewidth = (4 * 100) / totalAssignments;
+    var progPercent = document.querySelector('.progress-circle-prog');
+    progPercent.style.strokeDasharray = lateAssignments * (strokewidth) + ' 220';
+    var percentLabel = document.querySelector('.progress-text');
+    
+    $('.progress-text').data('progress', lateAssignments);
+    
+    var start = new Date().getTime();
+    
+      setTimeout( function() {
+        var now = (new Date().getTime()) - start;
+        var progress = now / 700;
+       
+        var percentage = Math.floor( ( totalAssignments - lateAssignments ) / totalAssignments * 100);
+        
+
+        percentLabel.innerHTML = Math.floor( ( totalAssignments - lateAssignments ) / totalAssignments * 100) + '%';
+        console.log("late assignments: " + lateAssignments);
+       
+        if (percentage >= 80) {
+        // green
+          progPercent.style.stroke = "#98EC87";
+        }
+        else if (percentage < 80 && percentage >= 60 ) {
+        // yellow
+          progPercent.style.stroke = "#F9F871";
+        } else if (percentage < 60) {
+        // red
+          progPercent.style.stroke = "#C74E4E";
+        } 
+        
+        if (progress > 1) {
+          setTimeout(arguments.callee, 10);
+        }
+    }, 10);
+    
+  }
     
   /**
    * Load the available task lists.
