@@ -16,10 +16,10 @@ $(document).ready(function(){
         $.each($('#assignment-form').serializeArray(), function(i, field) {
           values[field.name] = field.value;
         });
-        
+        console.log("Values for course: " + values);
         var assignment = $("#title").val();
         var course = $("#courseName").val();
-        var duedate = $("#duedate").val();
+        var duedate = $("#duedate").val() + " " + $('#duedatetime').val();
         console.log(assignment, course, duedate);
         
         google.script.run.getValuesFromForm(values);
@@ -38,6 +38,10 @@ $(document).ready(function(){
         google.script.run.withSuccessHandler(reloadData).getColumnsFromSheet();
     });
     
+    
+    
+   
+    
     google.script.run.withSuccessHandler(loadData).getColumnsFromSheet();
     google.script.run.withSuccessHandler(getEmail).getEmailString();
     
@@ -45,31 +49,82 @@ $(document).ready(function(){
        window.email = JSON.parse(data);
     }
     
+    
+    // get the current time    
+    function timeNow() {
+      var d = new Date();
+        //h = (d.getHours()<10?'0':'') + d.getHours(),
+        //m = (d.getMinutes()<10?'0':'') + d.getMinutes();
+      //i.value = h + ':' + m;
+      console.log(d);
+      //var currenttime = h + ':' + m;
+      return d;
+    }
+
+    // if the deadline has passed set the late status to true; 
+    // otherwise, do nothing
+    function getLateStatus(deadline, assignmentTitle, course) {
+      console.log("Now is: " + timeNow() + "  deadline: " + deadline);
+      var islate = false;
+      if (deadline < timeNow()) {
+        console.log("deadline has passed");
+        islate = true;
+        google.script.run.withSuccessHandler(updateLateStatus).setLateStatus(assignmentTitle, course, islate );
+      } 
+       
+    }
+    
+    function updateLateStatus(data) {
+      console.log("Update late status: " + data);
+    }
+
+   
+    
+    
      // Display courses 
     function loadData(data){
+      //timeNow();
       if (typeof data !== 'undefined') {
         var counter = 0; 
         var courses = JSON.parse(data) || [];
+       // console.log(data);
         var list = $('#dynamic-list').empty();
         courses.forEach(function(course){
           counter++; 
           var item = $('<li>');
           if (course[0] === window.email) {
+          console.log(course);
             var newDate = "";
             if (course[4] !== "") {
               var date = new Date(course[4]);
+              console.log(course[20]);
+              getLateStatus(date, course[1], course[2]);
+              
               newDate = date.toLocaleString("en-US").split(",")[0]
             }
+            
             var deleteIcon = $('<span class="deleteTask"><i class="far fa-trash-alt">')
               .data("assignId", counter)
               .bind('click', deleteAssig);
-            list.append("<div class='assgn'>" + course[1])
+            list.append("</span><div class='assgn'>" + course[1])
             list.append(deleteIcon);
-            list.append("</div>" + "<div class='cor'>" + course[2] + "</div>" + "<div class='date'>" + newDate + "</div>" + "</li>");
+            list.append("</div>" + 
+            "<div class='cor'>" + course[2] + "</div>" + 
+            "<div class='date'>" + newDate + "</div><br>");
+            console.log("assignId" + counter);
+            showMilestones(course[1], course[2]);
+            list.append("<div id='milestones" + course[2] + "'></div>")
+            list.append("</div>");
+            list.append("</li><br>");
           }
         })
       }
     }
+    
+
+ 
+    
+    
     
     function deleteAssig() {
       var deleteThis = $(this);
@@ -107,6 +162,82 @@ $(document).ready(function(){
     });
     loadTasks();
   }
+  
+  
+  
+   /*
+   * Call the google app script function get milestones
+   * Passes in title and course; Returns array with course name, milestones, statuses
+   * On Success calls updateMiles with the array from getMilestones()
+   */
+  function showMilestones(title, course) {
+     google.script.run.withSuccessHandler(updateMiles)
+        .withFailureHandler(showError)
+        .getMilestones(title,course);
+  }
+  
+  
+   /*
+   * TODO: Update milestone status in spreadsheet when its checkbox is clicked
+   */
+  function setMileStatus(title, course, isCheck) {
+     google.script.run.withSuccessHandler(updateMileStatus)
+        .withFailureHandler(showError)
+        .setMilestoneStatus(title, course, isCheck);
+  }
+  
+   /*
+   * Confirm checkbox has been changed
+   */
+  function updateMileStatus() {
+    console.log("Milestone Status Updated");
+  }
+    
+
+  
+  /*
+   * Display the milestones and respective checkboxes
+   */
+  function updateMiles(returnedMiles) {
+        console.log (returnedMiles);
+        
+        var arr = JSON.parse(returnedMiles);
+        var list = $('#milestones'+ arr[1]).empty();
+        for (var i = 2; i < arr.length - 5; i++){
+                var item = $('<label>');
+                
+                var milestoneStatus = arr[i + 5];
+                //console.log("should be assignment title:   " + arr[0]);
+                var assignmentTitle = arr[0];
+                var assignmentId = assignmentTitle + i;
+                var courseName = arr[1];
+               
+                var checkbox = $('<input type="checkbox">')
+                .data({'assignmentTitle' : assignmentTitle, 'assignmentId': assignmentId, 'course': courseName} ).bind('change', onCheckBoxChangeAssignment);
+              
+               
+                
+                item.append(checkbox);
+                //console.log(assignmentTitle + i);
+                var title = $('<span class="' + courseName + '">')
+                    .text(arr[i]);
+                if(milestoneStatus === true) {
+                   checkbox.prop("checked", true);
+                   title.css('text-decoration', 'line-through');
+                   console.log("Checked from db");
+                   
+                }
+                item.append(title);
+                
+      
+                list.append(item);
+                list.append('<br>');
+               
+       }
+     return arr;
+  }
+    
+  
 
   /**
    * Load the tasks in the currently selected task list.
@@ -125,10 +256,6 @@ $(document).ready(function(){
    */
   function showTasks(tasks) {
     var list = $('#tasks').empty();
-    tasks.sort(function(a,b){
-        // Greater score is sorted to front
-        return Number(b.notes[0]) - Number(a.notes[0])
-    })
     if (tasks.length > 0) {
       tasks.forEach(function(task){
         var item = $('<label>');
@@ -182,6 +309,45 @@ $(document).ready(function(){
       .setCompleted(taskListId, taskId, isChecked);
   }
   
+   /**
+   * A callback function that runs when an assignment is checked or unchecked.
+   */
+  function onCheckBoxChangeAssignment() {
+  // , milestone, mid, ischec
+    var checkbox = $(this);
+    var title = checkbox.siblings('span');
+    var assignmentTitle = checkbox.data('assignmentTitle');
+    var course = checkbox.data('course');
+    console.log("Assignment Title: " + assignmentTitle);
+    
+    var isChecked = checkbox.prop('checked');
+    //var taskListId = $('#tasklist').val();
+    var assignmentId = checkbox.data('assignmentId');
+    var id = parseInt(assignmentId.charAt(assignmentId.length - 1));
+    console.log("assignment.  -----" + id);
+    
+    console.log("Milestone to change: " + assignmentId);
+     console.log("Is checked: " + isChecked);
+    if (isChecked) {
+      title.css('text-decoration', 'line-through');
+    } else {
+      title.css('text-decoration', 'none');
+    }
+    
+    
+   google.script.run.withSuccessHandler(updateMilestoneStatus).withFailureHandler(updateMilestoneStatusFail).setMilestones(id, assignmentTitle, course);
+      
+  }
+  
+  // inject the html from the data returned by set Milestones
+  function updateMilestoneStatus(data) {
+    console.log("changed db value " + data);
+  }
+  
+   function updateMilestoneStatusFail(data) {
+    console.log("Went wrong " + data);
+  }
+  
   /**
    * A callback function that runs when the new task form is submitted.
    */
@@ -189,14 +355,11 @@ $(document).ready(function(){
     var taskListId = $('#tasklist').val();
     var titleTextBox = $('#task-title');
     var title = titleTextBox.val();
-    var note = String(Number($('#urgent').prop("checked") ? $('#urgent').val() : $('#not-urgent').val()) + 
-        Number($('#important').prop("checked") ? $('#important').val() : $('#not-important').val()));
-    google.script.run.withSuccessHandler
     google.script.run.withSuccessHandler(function() {
       titleTextBox.val('');
       loadTasks();
     }).withFailureHandler(showError)
-      .addTask(taskListId, title, note);
+      .addTask(taskListId, title);
     return false;
   }
   
@@ -217,7 +380,8 @@ $(document).ready(function(){
   }
     $('#tasklist').bind('change', loadTasks);
     $('#new-task').bind('submit', onNewTaskFormSubmit);
-    $('#create-button').on('click',function(){
+    
+     $('#create-button').on('click',function(){
         var taskList = $('#tasklist-title').val();
         console.log("button clicked");
         var titleTextBox = $('#tasklist-title');
@@ -283,7 +447,9 @@ $(document).ready(function(){
         
         var aname = document.getElementById("title").value;
         var course = document.getElementById("courseName").value;
-        var duedate = document.getElementById("duedate").value;
+        var duedateDay = document.getElementById("duedate").value;
+        var duedatetime = document.getElementById("duedatetime").value;
+        var duedate = duedateDay + " " + duedatetime;
         var m1date = document.getElementById("milestoneDate1").value;
         var m1d = document.getElementById("milstone1").value;
         var m2date = document.getElementById("milestoneDate2").value;
@@ -294,6 +460,7 @@ $(document).ready(function(){
         var m4d = document.getElementById("milstone4").value;
         var m5date = document.getElementById("milestoneDate5").value;
         var m5d = document.getElementById("milstone5").value;
+     
         var milestones = [m1d, m1date, m2d, m2date, m3d, m3date, m4d, m4date, m5d, m5date]
         
         document.getElementById("title").value = aname + ' is Due! ' + duedate + ' [' + m1d + ','+ m1date+ ','+ m2d+ ','+ m2date+ ','+ m3d+ ','+ m3date+ ','+ m4d+ ','+ m4date+ ','+ m5d+ ','+ m5date+ '] ';
@@ -304,6 +471,9 @@ $(document).ready(function(){
         google.script.run.withSuccessHandler(updateDone).withFailureHandler(updateNotDone).userAddEntry(aname, course, duedate, milestones);
         //console.log ("Ended!12");
     }
+    
+    
+  
     
     function updateNotDone(error) {
         console.log ("Update NOT Done");
@@ -316,8 +486,8 @@ $(document).ready(function(){
       // document.getElementById("title").value = 'Calendar entries have been added. Please edit them to block particular times as needed';
        // M.updateTextFields();
     }
-
-
+    
+    
 //this is what i need to fix for the milestones
     function doPlan(startHours) {
         var duedate = document.getElementById("duedate").value;
@@ -381,6 +551,8 @@ function populateMilestones(startHours){
         }
 }
 
+ 
+ 
 
 
 function int_to_string_hours(hour){
@@ -389,6 +561,10 @@ function int_to_string_hours(hour){
    result = '0'+result;
  }
 }
+
+ $( "#milestone-button" ).click(function() {     
+       $('#milestoneList').hide();
+    });
 
 // Rosarios part end
 });
