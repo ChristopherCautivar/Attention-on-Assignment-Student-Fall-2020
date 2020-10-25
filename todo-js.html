@@ -256,9 +256,9 @@ $(document).ready(function(){
    */
   function showTasks(tasks) {
     var list = $('#tasks').empty();
-    tasks.sort(function(a,b){	
-        // Greater score is sorted to front	
-        return Number(b.notes[0]) - Number(a.notes[0])	
+    tasks.sort(function(a,b){
+        // Greater score is sorted to front
+        return Number(b.notes[0]) - Number(a.notes[0])
     })
     if (tasks.length > 0) {
       tasks.forEach(function(task){
@@ -359,7 +359,7 @@ $(document).ready(function(){
     var taskListId = $('#tasklist').val();
     var titleTextBox = $('#task-title');
     var title = titleTextBox.val();
-    var note = String(Number($('#urgent').prop("checked") ? $('#urgent').val() : $('#not-urgent').val()) + 	
+    var note = String(Number($('#urgent').prop("checked") ? $('#urgent').val() : $('#not-urgent').val()) +
         Number($('#important').prop("checked") ? $('#important').val() : $('#not-important').val()));
     google.script.run.withSuccessHandler(function() {
       titleTextBox.val('');

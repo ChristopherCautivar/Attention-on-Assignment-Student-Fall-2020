@@ -51,9 +51,15 @@ $(document).ready(function(){
     //loadData();
     
 function updateProgressbar(lateAssignments, totalAssignments) {
-    var strokewidth = (4 * 100) / totalAssignments;
+    var strokewidth = (12.64 * 100) / totalAssignments;
+    var percentage = Math.floor( (totalAssignments - lateAssignments ) / totalAssignments * 100);
     var progPercent = document.querySelector('.progress-circle-prog');
-    progPercent.style.strokeDasharray = lateAssignments * (strokewidth) + ' 220';
+    //console.log((totalAssignments - lateAssignments ) / totalAssignments);
+    if (percentage == 100) {
+          progPercent.style.strokeDasharray = ' 999, 999';
+    } else {
+          progPercent.style.strokeDasharray = (percentage / 100) * (strokewidth) + ', 999';
+    }
     var percentLabel = document.querySelector('.progress-text');
     
     $('.progress-text').data('progress', lateAssignments);
@@ -64,11 +70,11 @@ function updateProgressbar(lateAssignments, totalAssignments) {
         var now = (new Date().getTime()) - start;
         var progress = now / 700;
        
-        var percentage = Math.floor( ( totalAssignments - lateAssignments ) / totalAssignments * 100);
+        var percentage = Math.floor( (totalAssignments - lateAssignments ) / totalAssignments * 100);
         
 
-        percentLabel.innerHTML = Math.floor( ( totalAssignments - lateAssignments ) / totalAssignments * 100) + '%';
-        console.log("late assignments: " + lateAssignments);
+        percentLabel.innerHTML = Math.floor( (totalAssignments - lateAssignments )  / totalAssignments * 100) + '%';
+        console.log("late assignments: " + percentage);
        
         if (percentage >= 80) {
         // green
