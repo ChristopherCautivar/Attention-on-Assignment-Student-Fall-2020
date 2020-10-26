@@ -302,7 +302,47 @@ function startHours(){
   return dates;
 }
 
+function getEvents() {
+  var date= (new Date());
+  
+  var startDate = (date.setMonth(date.getMonth() - 1));
+  var startISO = new Date(startDate).toISOString();
 
+  var endDate = date.setMonth(date.getMonth()  + 3);
+  var endISO = new Date(endDate).toISOString();
+  
+  var calendarId = 'primary';
+  var optionalArgs = {
+    timeMin: startISO,
+    timeMax: endISO,
+    showDeleted: false,
+    singleEvents: true,
+    orderBy: 'startTime'
+  };
+  var response = Calendar.Events.list(calendarId,optionalArgs);
+  var events = response.items;
+  if (events.length > 0) {
+    var fcEvents = [];
+    for (i = 0; i < events.length; i++) {
+      var event = events[i];      
+
+      fcEvents.push({
+        id: event.id,
+        title: event.summary,
+        backgroundColor: event.colorId,
+        start: event.start.dateTime || event.start.date,
+        end: event.end.dateTime || event.end.date,
+        url: event.htmlLink,
+        location: event.location,
+        description: event.description
+      });      
+      
+    }
+    return fcEvents
+  } else {
+    Logger.log('No events found.');
+  }
+}
 
 
 
