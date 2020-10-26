@@ -156,9 +156,14 @@ function setLateStatus(assignmentTitle, course, isLate){
         var current_row = values[i];
         // milstone ids
         // 2 3 4 5 6
+        var current_row = values[i];
+        milestones = [values[i][1], values[i][2], current_row[5], current_row[7], current_row[9], current_row[11], 
+        current_row[13], current_row[15], current_row[16], current_row[17], current_row[18], current_row[19]];
+        var doneStatus =  current_row[15] == true && current_row[16] == true && current_row[17] == true && current_row[18] == true && current_row[19] == true
+       
         //var status =   ws.getRange( i + 1, 16, 1, 5).insertCheckBoxes(); // selects all five checkboxes
          var latestatus = ws.getRange( i + 1, 21 , 1, 1); // seclect one cell - chnage the second parametr to change milestone within same row
-         if (isLate === true) {
+         if (isLate === true && doneStatus == false) { // if it's past deadline and milstones not all all checked off, mark late as true
            latestatus.setValue('TRUE');
          } else {
            latestatus.setValue('FALSE');

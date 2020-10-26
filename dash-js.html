@@ -33,13 +33,12 @@ $(document).ready(function(){
            } 
        })
        
-       console.log("courses I'm taking..." + userCourses.length);
        var lateAssgn = 0;
       
        for (var i = 0; i < userCourses.length; i++) {
          if (userCourses[i][20] == true) {
            lateAssgn += 1;
-         }
+         } 
        }
        updateProgressbar(lateAssgn, userCourses.length);
        
