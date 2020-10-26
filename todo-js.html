@@ -201,7 +201,7 @@ $(document).ready(function(){
       titleTextBox.val('');
       loadTasks();
     }).withFailureHandler(showError)
-      .addTask(taskListId, title);
+      .addTask(taskListId, title, note);
     return false;
   }
   
