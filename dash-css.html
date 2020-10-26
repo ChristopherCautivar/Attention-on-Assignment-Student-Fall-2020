@@ -347,29 +347,64 @@ width:30%;
 }
     
 /*  Progress bar - Circle */ 
-svg{
-position: relative;
-width: 150px;
-height: 150px;
-z-index: 1000;
-}
-svg circle{
-width: 100%;
-height: 100%;
-fill:none;
-/* green: 98EC87   yellow:#F9F871  red: #C74E4E  */
-stroke: #98EC87;
-stroke-width: 10;
-stroke-lincecap: round;
-transform: translate(5px,5px);
 
+.progress {
+    position: relative;   
+    height: 160px;
+    width: 160px;
+     margin: 10px auto;
 }
+
+.progress-circle {
+ position: relative;
+ 
+}
+
+.progress-circle-back {
+	fill: none; 
+    
+	stroke: #D0D0D0;
+	stroke-width:10px;
+}
+
+.progress-circle-prog {
+	fill: none; 
+    /* green: 98EC87   yellow:#F9F871  red: #C74E4E  */
+
+	stroke: #98EC87;
+	stroke-width: 10px;  
+	stroke-dasharray: 999 999;    
+	stroke-dashoffset: 0px;
+    transition: stroke-dasharray 0.7s linear 0s;
+}
+
+.progress-text {
+	width: 100%;
+	position: absolute;
+	top: 60px;
+	text-align: center;
+	font-size: 2em;
+}
+
+.progress-text {
+	
+	
+}
+/*
+ <svg class="progress">
+                      <circle class="progress-bg" cx="70" cy="70" r="70"></circle>
+                      <circle class="progress-fill" cx="70" cy="70" r="70"></circle>
+                    </svg>
+                    <div class="number">
+                      <h2 class="percentlabel"> 100 % </h2>
+*/
 
 svg circkle:nth-childe(2){
-stroke-dasharray: 220;
-stroke-dashoffset: 220;
+/*stroke-dasharray: 220;
+stroke-dashoffset: 220;*/
 }
 .cardProgress{
+
 margin-top: 15%;
 }
   
