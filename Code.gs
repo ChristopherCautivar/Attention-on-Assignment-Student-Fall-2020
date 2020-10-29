@@ -243,7 +243,7 @@ function setCompleted(taskListId, taskId, completed) {
  * @param {String} title The title of the new task.
  */
 function addTask(taskListId, title, notes = "") {
-  var task = Tasks.newTask().setTitle(title)
+  var task = Tasks.newTask().setTitle(title);
   task.notes = notes + " Eisenhower Matrix Score";
   Tasks.Tasks.insert(task, taskListId);
 }
