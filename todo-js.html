@@ -20,13 +20,19 @@ $(document).ready(function(){
     $("#save").click(function(){
         var values = {};
         $.each($('#assignment-form').serializeArray(), function(i, field) {
-          values[field.name] = field.value;
+            values[field.name] = field.value;
         });
-        console.log("Values for course: " + values);
+        
+        //str = JSON.stringify(values, null, 4);
+        //console.log("Values for course: " + str);
+        
         var assignment = $("#title").val();
         var course = $("#courseName").val();
         var duedate = $("#duedate").val() + " " + $('#duedatetime').val();
-        console.log(assignment, course, duedate);
+        //console.log(assignment, course, duedate);
+        
+        //str = JSON.stringify(duedate, null, 4);
+        //console.log(str);
         
         google.script.run.getValuesFromForm(values);
         
@@ -176,7 +182,7 @@ $(document).ready(function(){
    * Passes in title and course; Returns array with course name, milestones, statuses
    * On Success calls updateMiles with the array from getMilestones()
    */
-  function showMilestones(title, course) {
+  function showMilestones(title, course) {     
      google.script.run.withSuccessHandler(updateMiles)
         .withFailureHandler(showError)
         .getMilestones(title,course);
@@ -416,7 +422,8 @@ $(document).ready(function(){
    //   document.addEventListener('DOMContentLoaded', function() {
        var selectBoxes = document.querySelectorAll('select');
        M.FormSelect.init(selectBoxes);
-       google.script.run.withSuccessHandler(populateDates).getCalendarBusyDays();
+       //Only returns completely empty days
+       //google.script.run.withSuccessHandler(populateDates).getCalendarBusyDays();
        
    //  });  
           
@@ -467,23 +474,43 @@ $(document).ready(function(){
         var duedateDay = document.getElementById("duedate").value;
         var duedatetime = document.getElementById("duedatetime").value;
         var duedate = duedateDay + " " + duedatetime;
-        var m1date = document.getElementById("milestoneDate1").value;
+        
+        //Milstone1
         var m1d = document.getElementById("milstone1").value;
-        var m2date = document.getElementById("milestoneDate2").value;
+        var m1date = document.getElementById("milestoneDate1").value;
+        var m1time = document.getElementById("milestoneTime1").value;
+        var m1duedate = m1date + " " + m1time;
+        
+        //Milstone2
         var m2d = document.getElementById("milstone2").value;
-        var m3date = document.getElementById("milestoneDate3").value;
+        var m2date = document.getElementById("milestoneDate2").value;
+        var m2time = document.getElementById("milestoneTime2").value;
+        var m2duedate = m2date + " " + m2time;        
+
+        //Milstone3
         var m3d = document.getElementById("milstone3").value;
-        var m4date = document.getElementById("milestoneDate4").value;
+        var m3date = document.getElementById("milestoneDate3").value;
+        var m3time = document.getElementById("milestoneTime3").value;
+        var m3duedate = m3date + " " + m3time;
+        
+        //Milstone4
         var m4d = document.getElementById("milstone4").value;
-        var m5date = document.getElementById("milestoneDate5").value;
+        var m4date = document.getElementById("milestoneDate4").value;
+        var m4time = document.getElementById("milestoneTime4").value;
+        var m4duedate = m4date + " " + m4time;
+        
+        //Milstone5
         var m5d = document.getElementById("milstone5").value;
+        var m5date = document.getElementById("milestoneDate5").value;
+        var m5time = document.getElementById("milestoneTime5").value;
+        var m5duedate = m5date + " " + m5time;        
      
-        var milestones = [m1d, m1date, m2d, m2date, m3d, m3date, m4d, m4date, m5d, m5date]
+        var milestones = [m1d, m1duedate, m2d, m2duedate, m3d, m3duedate, m4d, m4duedate, m5d, m5duedate]
         
-        document.getElementById("title").value = aname + ' is Due! ' + duedate + ' [' + m1d + ','+ m1date+ ','+ m2d+ ','+ m2date+ ','+ m3d+ ','+ m3date+ ','+ m4d+ ','+ m4date+ ','+ m5d+ ','+ m5date+ '] ';
-        
+        document.getElementById("title").value = aname + ' is Due! ' + duedate + ' [' + m1d + ','+ m1duedate+ ','+ m2d+ ','+ m2duedate+ ','+ m3d+ ','+ m3duedate+ ','+ m4d+ ','+ m4duedate+ ','+ m5d+ ','+ m5duedate+ '] ';
+
         //console.log(milestones)
-        //console.log( aname + ' ' + duedate + ' [' + m1d + ','+ m1date+ ','+ m2d+ ','+ m2date+ ','+ m3d+ ','+ m3date+ ','+ m4d+ ','+ m4date+ ','+ m5d+ ','+ m5date+ '] ')
+        console.log( aname + ' ' + duedate + ' [' + m1d + ','+ m1duedate+ ','+ m2d+ ','+ m2duedate+ ','+ m3d+ ','+ m3duedate+ ','+ m4d+ ','+ m4duedate+ ','+ m5d+ ','+ m5duedate+ '] ')
         //console.log ("Started!12");
         google.script.run.withSuccessHandler(updateDone).withFailureHandler(updateNotDone).userAddEntry(aname, course, duedate, milestones);
         //console.log ("Ended!12");
@@ -537,25 +564,25 @@ function populateMilestones(startHours){
             milestone_date.push(new Date(due-(i*diffDays)));
         }
         
-         console.log(milestone_date);
-        
+         //console.log(milestone_date);
+        console.log(startHours)
         // Array with date of the events 
         var eventDates = startHours.map(function(e){return e.slice(0,15);});
-        
+        //console.log(eventDates)
         // Array with time of the event 
-        var eventHours = startHours.map(function(e){return e.slice(16,17);});
-        
+        var eventHours = startHours.map(function(e){return e.slice(16,34);});
+        //console.log(eventHours)
         //Loop , check milestone date exist in above date_of_events array
         
-        var elementId = ["milestoneDate1","milestoneDate2","milestoneDate3","milestoneDate4","milestoneDate5"];
-        
+        var elementId = ["milestoneDate1","milestoneDate2","milestoneDate3","milestoneDate4","milestoneDate5","milestoneTime1","milestoneTime2","milestoneTime3","milestoneTime4","milestoneTime5"];
         for (var i = 0 ; i < 5;i++){
-          if (milestone_date[i].toString().slice(0,15) in  eventDates){
+          if (milestone_date[i].toString().slice(0,15) in eventDates){
               for (var hour = 8; hour < 22 ;hour += 2){
                 if (!(eventHours.indexOf(int_to_string_hours(hour)) == eventDates.indexOf(milestone_date[i].toString().slice(0,15)))){
                     var temp = milestone_date[i];
                     temp.setHours(hour,0,0,0);
                     document.getElementById(elementId[i]).value = temp;
+                    document.getElementById(elementId[i] + 5).value = temp;
                 }
               }
             }
@@ -563,14 +590,13 @@ function populateMilestones(startHours){
           else{
             var temp1 = milestone_date[i];
             temp1.setHours(10,0,0,0);
-            document.getElementById(elementId[i]).value = temp1; 
+            var temp2 = formatDate(temp1);
+            console.log(temp2);
+            document.getElementById(elementId[i]).value = temp2.toString().slice(4,15);
+            document.getElementById(elementId[(i + 5)]).value = temp2.toString().slice(16,25);
           }
         }
 }
-
- 
- 
-
 
 function int_to_string_hours(hour){
  var result = hour.toString();
@@ -578,6 +604,39 @@ function int_to_string_hours(hour){
    result = '0'+result;
  }
 }
+
+//https://stackoverflow.com/a/4898840/13193876
+function formatDate(date) {
+  var d = new Date(date);
+  var hh = d.getHours();
+  var m = d.getMinutes();
+  var s = d.getSeconds();
+  var dd = "AM";
+  var h = hh;
+  if (h >= 12) {
+    h = hh - 12;
+    dd = "PM";
+  }
+  if (h == 0) {
+    h = 12;
+  }
+  m = m < 10 ? "0" + m : m;
+
+  s = s < 10 ? "0" + s : s;
+
+  h = h<10?"0"+h:h;
+
+  var pattern = new RegExp("0?" + hh + ":" + m + ":" + s);
+
+  var replacement = h + ":" + m;
+  /* if you want to add seconds
+  replacement += ":"+s;  */
+  replacement += " " + dd;
+
+  return date.toString().replace(pattern, replacement);
+}
+
+//alert(formatDate("February 04, 2011 12:00:00"));
 
  $( "#milestone-button" ).click(function() {     
        $('#milestoneList').hide();
