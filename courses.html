@@ -131,7 +131,7 @@
           </div>
         
           <h4 class="titleCourse">Courses</h4>
-          <p>Select a course from the drop down menu to get the link for the corresponding assignment to view on iLearn </p>
+          <p>Select a course from the drop down menu to get the link for the corresponding assignment to view on iLearn (available only with participating faculty)</p>
         </div>
         <div class="row">
           <div class="well">
@@ -171,10 +171,6 @@
       $("#gdo").on("click", function(){
         window.open("https://docs.google.com/document/u/0/?tgif=c", '_blank');
       });
-
-      setTimeout(function() {
-        $("#btn").show();
-      }, 8000);
     });
   </script>
   <?!= include('course-script'); ?>

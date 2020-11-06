@@ -39,38 +39,49 @@
   //********************************************************************************
   newList.addEventListener('change', function() {
     var displayTheLink = document.getElementById('instructorLink')
-    if(displayTheLink.value != ""){
-      displayTheLink.innerHTML = "";
-    }
+    var myButton = document.getElementById("btn");
+    clickedAssignment = ""
+    displayTheLink.innerHTML = "";
+    myButton.style.display="none";
+
     getCourseInfo();
   })
   function displayAssignment(assignmentList){
     var sectionAssignments = document.getElementById('sectionAssign')
     sectionAssignments.innerHTML = " ";
     for (var i = 0; i < assignmentList.length; i++) {
-      sectionAssignments.innerHTML += "<div><input type='checkbox' value='"+assignmentList[i]+"' name = 'myCheckbox' id = 'checkingBox' onclick='selectOnlyThis(this)' >" + assignmentList[i] + "</div>"
+      sectionAssignments.innerHTML += "<div><input type='checkbox' value='"+assignmentList[i]+"' name = 'myCheckbox' id = 'checkingBox' onclick='selectOnlyThis(this)' >" + " " + assignmentList[i] + "</div>"
     }
   }
   function getCourseInfo(){
+    var sectionAssignments = document.getElementById('sectionAssign')
+    sectionAssignments.innerHTML = " ";    
     if($("#all_class option:selected").val() != "Add New Class"){
       google.script.run.withSuccessHandler(displayAssignment).getAssignments($("#all_class option:selected").val());
-    }
-    else{
-      var sectionAssignments = document.getElementById('sectionAssign')
-      sectionAssignments.innerHTML = " ";
     }
   }
   
   //********************************************************************************
   //                    FUNCTION TO SEE WHICH CHECKBOX IS CLICKED                  *
   //********************************************************************************
-  function selectOnlyThis(id){
+  function selectOnlyThis(id){    
+     var myButton = document.getElementById("btn");
      var myCheckbox = document.getElementsByName("myCheckbox");
+     var displayTheLink = document.getElementById('instructorLink')    
+     displayTheLink.innerHTML = "";
      Array.prototype.forEach.call(myCheckbox,function(el){
-        el.checked = false;
+        if(id !== el) {
+          el.checked = false;
+        }
      });
-     clickedAssignment = id.value
-     id.checked = true;
+     if(id.checked == true){
+      clickedAssignment = id.value;
+      myButton.style.display="block";   
+     }
+     else{
+      clickedAssignment = "";
+      myButton.style.display="none";
+     }
   }
   
   //********************************************************************************
