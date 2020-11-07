@@ -20,7 +20,8 @@ $(document).ready(function(){
     $("#save").click(function(){
         var values = {};
         $.each($('#assignment-form').serializeArray(), function(i, field) {
-            values[field.name] = field.value;
+            values[field.name] = field.value.trim();
+            console.log(field.name);
         });
         
         //str = JSON.stringify(values, null, 4);
@@ -125,7 +126,7 @@ $(document).ready(function(){
             "<div class='date'>" + newDate + "</div><br>");
             console.log("assignId" + counter);
             showMilestones(course[1], course[2]);
-            list.append("<div id='milestones" + course[2] + "'></div>")
+            list.append("<div id='milestones" + course[2].replace(/\s+/g, '') + "'></div>")
             list.append("</div>");
             list.append("</li><br>");
           }
@@ -214,7 +215,8 @@ $(document).ready(function(){
         console.log (returnedMiles);
         
         var arr = JSON.parse(returnedMiles);
-        var list = $('#milestones'+ arr[1]).empty();
+         var courseName = arr[1].replace(/\s+/g, '');
+        var list = $('#milestones'+ courseName).empty();
         for (var i = 2; i < arr.length - 5; i++){
                 var item = $('<label>');
                 
@@ -222,7 +224,9 @@ $(document).ready(function(){
                 //console.log("should be assignment title:   " + arr[0]);
                 var assignmentTitle = arr[0];
                 var assignmentId = assignmentTitle + i;
-                var courseName = arr[1];
+               
+    
+               
                
                 var checkbox = $('<input type="checkbox">')
                 .data({'assignmentTitle' : assignmentTitle, 'assignmentId': assignmentId, 'course': courseName} ).bind('change', onCheckBoxChangeAssignment);
