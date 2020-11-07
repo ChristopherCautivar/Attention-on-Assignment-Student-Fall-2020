@@ -82,10 +82,18 @@
     
     /* Set gray background color and 100% height */
     .sidenav {
+      /*border-style: solid;
+      border: 5px solid blue;*/       
       background-color: #f1f1f1;
       margin-left: -15px;
-      min-height:950px;
+      /*min-height:1180px;*/
+      min-height: 70vw;
       width: 18%;
+    }    
+    
+    .row-content{
+    /*border-style: solid;
+    border: 5px solid red;*/
     }
     
      
@@ -390,6 +398,72 @@ width:30%;
 	
 	
 }
+
+
+/* pomodoro timer styling */
+#pomodoro-container{ 
+  border-radius :20px;
+  width:400px;
+  margin: 5px 20px auto;
+  padding:20px;
+  text-align:center;
+}
+
+#timer{ 
+  color: grey; 
+  font-size:25px; 
+  margin:10px auto;
+  border : 5px solid #ff6666;
+  border-radius:50%;
+  width:150px;
+  height:150px;
+  overflow:hidden;
+  position:relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor:default;
+}
+
+#time{
+  margin-top:55px;
+  z-index : 1;
+  position:relative;
+}
+
+#filler{
+  background : #ff6666;
+  height: 0px;
+  width: 150px;
+  position:absolute;
+  bottom:0;
+}
+
+#pomodoro-btns button { 
+  background:#4da6ff; 
+  border:none; 
+  color:#fff; 
+  padding:5px; 
+  width:65px; 
+  margin:40px 20px;
+  font-size:14px;
+  height : 25px;
+  border-radius : 50px;
+}
+#pomodoro-btns button#study{
+  background : #98EC87;
+}
+
+#pomodoro-btns button#break{
+  background : #4ddbff;
+}
+
+#pomodoro-btns button#stop{
+  background : red;
+}
+
+
 /*
  <svg class="progress">
                       <circle class="progress-bg" cx="70" cy="70" r="70"></circle>
