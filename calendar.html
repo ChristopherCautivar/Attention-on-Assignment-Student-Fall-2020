@@ -90,11 +90,12 @@ function getCalendar(events){
   //https://www.googleapis.com/auth/calendar.readonly	read-only access to Calendarslet userEmail = $("#username"); 
   var calendarEl = document.getElementById('responsiveCal');
   var calendar = new FullCalendar.Calendar(calendarEl, {
+  dayMaxEvents: 4,
   headerToolbar: {
     left: 'prev,next today',
     center: 'title',
     right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-  },   
+  },
   events: events
 });
   calendar.render();
