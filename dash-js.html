@@ -134,14 +134,14 @@ function updateProgressbar(lateAssignments, totalAssignments) {
       this.resetVariables(25, 0, true);
     },
     startBreak : function(){
-      this.resetVariables(10, 0, true);
+      this.resetVariables(1, 0, true);
     },
     stopTimer : function(){
       this.resetVariables(25, 0, false);
       this.updateDom();
     },
     toDoubleDigit : function(num){
-      if(num < 10) {
+      if(num < 1) {
         return "0" + parseInt(num, 10);
       }
       return num;
@@ -167,6 +167,8 @@ function updateProgressbar(lateAssignments, totalAssignments) {
       this.updateDom();
     },
     timerComplete : function(){
+      console.log("Done");
+      alert("Time is up!");
       this.started = false;
       this.fillerHeight = 0;
     }
