@@ -134,14 +134,14 @@ function updateProgressbar(lateAssignments, totalAssignments) {
       this.resetVariables(25, 0, true);
     },
     startBreak : function(){
-      this.resetVariables(1, 0, true);
+      this.resetVariables(10, 0, true);
     },
     stopTimer : function(){
       this.resetVariables(25, 0, false);
       this.updateDom();
     },
     toDoubleDigit : function(num){
-      if(num < 1) {
+      if(num < 10) {
         return "0" + parseInt(num, 10);
       }
       return num;
