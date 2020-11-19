@@ -167,6 +167,8 @@ function updateProgressbar(lateAssignments, totalAssignments) {
       this.updateDom();
     },
     timerComplete : function(){
+      console.log("Done");
+      alert("Time is up!");
       this.started = false;
       this.fillerHeight = 0;
     }
