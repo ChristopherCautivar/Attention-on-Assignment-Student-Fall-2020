@@ -539,14 +539,12 @@ $(document).ready(function(){
 //this is what i need to fix for the milestones
     function doPlan(startHours) {
         var duedate = document.getElementById("duedate").value;
-        
-        console.log (duedate);
         var due = new Date(duedate);
         var today = new Date();
         var millInDay = 24 * 60 * 60 * 1000;
         var diffDays = (due - today)/5;
         
-        google.script.run.withSuccessHandler(populateMilestones).startHours();
+        google.script.run.withSuccessHandler(populateMilestones).startHours(duedate);
        
         document.getElementById("milstone1").value = 'Read & understand the assignment';
         document.getElementById("milstone2").value = 'Complete minimum goal and verify';
@@ -556,53 +554,140 @@ $(document).ready(function(){
         M.updateTextFields();
     }
 
+// tabulate events that take place on a given day as morning/afternoon/evening  
+function evaluateEventDistribution(day, events) {
+        
+        // event distribution histogram
+        var eventDist = {
+           "morning" : 0, 
+           "afternoon": 0, 
+           "evening": 0
+        }
+        
+        // loop through existing events to gage busy periods  
+        for (i = 0; i < events.length; i++) {
+
+          // if event on same day, tabulate time distribution 
+          if (day === events[i].toString().slice(4,15)) {
+
+            var timeOfEvent = parseInt(events[i].toString().slice(16,18))
+            
+            // 12:00am - 11:59am
+            if (timeOfEvent < 12 ) {
+              eventDist.morning += 1;
+            
+            // 12:00pm - 5:59pm 
+            } else if (timeOfEvent >= 12 && timeOfEvent < 18) {
+              eventDist.afternoon += 1;
+           
+            // 6:00pm - 11:59pm
+            } else {
+              eventDist.evening += 1;
+            }
+          }
+        }
+        return eventDist
+}
+
+function findTimeslot(day, startTime, events2, potentialMilestoneTimes) {
+  var finalStartTime = startTime;
+  
+  // take existing calendar events and combined them with any potential milestones
+  var totalEvents = events2.concat(potentialMilestoneTimes);
+  totalEvents.sort();
+  console.log(totalEvents);
+
+  // begin search for any existing events that may conflict with the new milestone
+  var keepSearching = true;
+  while(keepSearching) {
+    keepSearching = false;
+    
+    // loop through existing events to check for conflicts
+    for (i = 0; i < totalEvents.length; i++) {
+      
+      // if conflict found make adjustment increment start time and try again 
+      if (day === totalEvents[i].toString().slice(4,15) && finalStartTime === parseInt(totalEvents[i].toString().slice(16,18)) )  {
+        keepSearching = true;
+        finalStartTime += 1;
+        break;
+      }  
+    }
+  }
+  
+  return finalStartTime
+}
+
 function populateMilestones(startHours){
+        // startHours is the start hours of events that currently take place during the time frame of the new assignment  
+        
         var duedate = document.getElementById("duedate").value;
+        
         var due = new Date(duedate);
         var today = new Date();
         var millInDay = 24 * 60 * 60 * 1000;
         var diffDays = (due - today)/5;
         
+        // Array of dates milestones will be scheduled 
         var milestone_date = [];
-        for ( var i = 5 ; i > 0;i--){
+        for ( var i = 5 ; i > 0;i--) {
             milestone_date.push(new Date(due-(i*diffDays)));
         }
         
-         //console.log(milestone_date);
-        console.log(startHours)
         // Array with date of the events 
         var eventDates = startHours.map(function(e){return e.slice(0,15);});
-        //console.log(eventDates)
+        
         // Array with time of the event 
         var eventHours = startHours.map(function(e){return e.slice(16,34);});
-        //console.log(eventHours)
-        //Loop , check milestone date exist in above date_of_events array
         
+        // get string dates targeted for milestone 
+        var milestoneDays = []
+        for (var i = 0 ; i < 5;i++) {
+          var day = milestone_date[i];
+          var dayDate = formatDate(day);
+          milestoneDays.push(dayDate.toString().slice(4,15));
+        }
+        
+
+        // used for selecting html elements
         var elementId = ["milestoneDate1","milestoneDate2","milestoneDate3","milestoneDate4","milestoneDate5","milestoneTime1","milestoneTime2","milestoneTime3","milestoneTime4","milestoneTime5"];
+        
+        // save potential milestone times to keep form overlapping dates  
+        var potentialMilestoneTimes = []
+        
         for (var i = 0 ; i < 5;i++){
-          if (milestone_date[i].toString().slice(0,15) in eventDates){
-              for (var hour = 8; hour < 22 ;hour += 2){
-                if (!(eventHours.indexOf(int_to_string_hours(hour)) == eventDates.indexOf(milestone_date[i].toString().slice(0,15)))){
-                    var temp = milestone_date[i];
-                    temp.setHours(hour,0,0,0);
-                    document.getElementById(elementId[i]).value = temp;
-                    document.getElementById(elementId[i] + 5).value = temp;
-                }
-              }
-            }
+            
+          var eventDistribution = evaluateEventDistribution(milestoneDays[i], startHours);
+          var startTime = 12; //default 
+            
+          /* based on event distribution histogram select time block for milestones */  
           
-          else{
-            var temp1 = milestone_date[i];
-            temp1.setHours(10,0,0,0);
-            var temp2 = formatDate(temp1);
-            console.log(temp2);
-            document.getElementById(elementId[i]).value = temp2.toString().slice(4,15);
-            document.getElementById(elementId[(i + 5)]).value = temp2.toString().slice(16,25);
+          // afternoon
+          if (eventDistribution.afternoon <= eventDistribution.morning && eventDistribution.afternoon <= eventDistribution.evening) {
+            startTime = findTimeslot(milestoneDays[i], 13, startHours, potentialMilestoneTimes);
           }
+          // morning
+          else if (eventDistribution.morning <= eventDistribution.afternoon && eventDistribution.morning <= eventDistribution.evening) {
+            startTime = findTimeslot(milestoneDays[i], 9, startHours, potentialMilestoneTimes);
+          }            
+          // evening
+          else if (eventDistribution.evening < eventDistribution.morning && eventDistribution.evening < eventDistribution.morning) {
+            startTime = findTimeslot(milestoneDays[i], 19, startHours, potentialMilestoneTimes);
+          }
+            
+          // save potential date and format date for output
+          var temp1 = milestone_date[i];
+          temp1.setHours(startTime,0,0,0);
+          potentialMilestoneTimes.push(temp1)
+          var temp2 = formatDate(temp1);
+          
+          // display potential milestones to the user
+          document.getElementById(elementId[i]).value = temp2.toString().slice(4,15);
+          document.getElementById(elementId[(i + 5)]).value = temp2.toString().slice(16,25);
+
         }
 }
 
-function int_to_string_hours(hour){
+function int_to_string_hours(hour) {
  var result = hour.toString();
  if (hour.lenght() == 1){
    result = '0'+result;
