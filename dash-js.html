@@ -167,6 +167,8 @@ function updateProgressbar(lateAssignments, totalAssignments) {
       this.updateDom();
     },
     timerComplete : function(){
+      console.log("Done");
+      alert("Time is up!");
       this.started = false;
       this.fillerHeight = 0;
     }
@@ -210,7 +212,9 @@ function updateProgressbar(lateAssignments, totalAssignments) {
         $(".chart--num.task").html(countTask);
       });
     } else {
-      list.text('No tasks');
+      if(list.length <= 0){
+        list.text('No tasks');
+      }
     }
   }
   

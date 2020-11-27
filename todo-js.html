@@ -7,6 +7,7 @@ $(document).ready(function(){
   $('.openBtn').on('click',function(){
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
+          $("#form-feedback").html("");
           document.getElementById("assignment-form").reset();        
     });
     
@@ -250,6 +251,7 @@ $(document).ready(function(){
                 list.append('<br>');
                
        }
+     list.append('<div class="end"></div>');
      return arr;
   }
     
@@ -400,6 +402,22 @@ $(document).ready(function(){
       console.log(taskId);
       google.script.run.withSuccessHandler(loadTasks).withFailureHandler(showError).deleteTask(taskListId, taskId);
   }
+  
+  function validTaskListTitle() {
+    let tasklistInput = $("#tasklist-title").val();
+        
+    let filledInTitle  = true;
+        
+    if(tasklistInput == "" || tasklistInput == "Enter title of task list") {
+      $("#tasklist-title").addClass("invalid");
+      filledInTitle = false;
+    } else {
+      $("#tasklist-title").removeClass("invalid");
+    }    
+    
+    return filledInTitle;
+  }   
+  
     $('#tasklist').bind('change', loadTasks);
     $('#new-task').bind('submit', onNewTaskFormSubmit);
     
@@ -408,16 +426,24 @@ $(document).ready(function(){
         console.log("button clicked");
         var titleTextBox = $('#tasklist-title');
         
-        if(taskList == '') {
-            alert("Please enter a title");
-            return
-        }
+	    var validTitleForm = validTaskListTitle();
         
+        if(!validTitleForm) {
+          $("#title-feedback").html("  Please enter a title");
+          $("#title-feedback").addClass("invalid2");
+          return
+        } else {
+          $("#title-feedback").html("");
+        }        
+        
+        $('#new-task').submit();
         google.script.run.withSuccessHandler(function() {
         loadTaskLists();
         }).withFailureHandler(showError)
         .newTaskList(taskList);
         titleTextBox.val('');
+        $("#modal2").toggle();
+        $('.modal-overlay').remove();
     });
   
     loadTaskLists();
@@ -535,9 +561,61 @@ $(document).ready(function(){
        // M.updateTextFields();
     }
     
+    function validFirstHalfForm() {
     
-//this is what i need to fix for the milestones
+        let titleInput = $("#title").val();
+        let courseNameInput = $("#courseName").val();
+        let duedateInput = $("#duedate").val();
+        let duedatetimeInput = $("#duedatetime").val();
+        
+        let filledIn  = true;
+        
+        if(titleInput == "" || duedateInput == "Enter title") {
+          $("#title").addClass("invalid");
+          filledIn = false;
+        } else {
+          $("#title").removeClass("invalid");
+        }
+        
+        if(courseNameInput == "" || duedateInput == "Enter course name") {
+          $("#courseName").addClass("invalid");
+          filledIn = false;
+        } else {
+          $("#courseName").removeClass("invalid");
+        } 
+        
+        if(duedateInput == "" || duedateInput == "Enter date") {
+          $("#duedate").addClass("invalid");
+          filledIn = false;
+        } else {
+          $("#duedate").removeClass("invalid");
+        }
+ 
+        if(duedatetimeInput == "" || duedateInput == "Enter time") {
+          $("#duedatetime").addClass("invalid");
+          filledIn = false;
+        } else {
+          $("#duedatetime").removeClass("invalid");
+        }    
+        
+        return filledIn
+    
+    }
+    
+   /**
+   * A callback function that runs when generating auto milestones.
+   */
     function doPlan(startHours) {
+        
+        validForm = validFirstHalfForm();
+        
+        if(!validForm) {
+          $("#form-feedback").html(" Please complete all form fields");
+          $("#form-feedback").addClass("invalid2");
+          return
+        } else {
+          $("#form-feedback").html("");
+        }
         var duedate = document.getElementById("duedate").value;
         var due = new Date(duedate);
         var today = new Date();
@@ -553,8 +631,9 @@ $(document).ready(function(){
         document.getElementById("milstone5").value = 'Review work against grading requirement';
         M.updateTextFields();
     }
-
-// tabulate events that take place on a given day as morning/afternoon/evening  
+/**
+* tabulate events that take place on a given day as morning/afternoon/evening
+*/
 function evaluateEventDistribution(day, events) {
         
         // event distribution histogram
@@ -589,6 +668,11 @@ function evaluateEventDistribution(day, events) {
         return eventDist
 }
 
+/**
+* Concatenate list of calendar events and previous milestone times,
+* sorts the new list and incrementally searches for an opening, 
+* beginning with a given start time.
+*/
 function findTimeslot(day, startTime, events2, potentialMilestoneTimes) {
   var finalStartTime = startTime;
   
@@ -617,6 +701,11 @@ function findTimeslot(day, startTime, events2, potentialMilestoneTimes) {
   return finalStartTime
 }
 
+
+/**
+* A callback function that runs when generating auto milestones.
+* Routes times slot requests depending on existing daily calendar event distribution.
+*/
 function populateMilestones(startHours){
         // startHours is the start hours of events that currently take place during the time frame of the new assignment  
         
@@ -694,7 +783,10 @@ function int_to_string_hours(hour) {
  }
 }
 
-//https://stackoverflow.com/a/4898840/13193876
+/**
+* Converting GMT to local time.
+* source: https://stackoverflow.com/a/4898840/1319387
+*/
 function formatDate(date) {
   var d = new Date(date);
   var hh = d.getHours();
@@ -725,12 +817,8 @@ function formatDate(date) {
   return date.toString().replace(pattern, replacement);
 }
 
-//alert(formatDate("February 04, 2011 12:00:00"));
-
  $( "#milestone-button" ).click(function() {     
        $('#milestoneList').hide();
     });
-
-// Rosarios part end
 });
 </script>
