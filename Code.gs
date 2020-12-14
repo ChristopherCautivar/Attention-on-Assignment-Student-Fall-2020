@@ -287,9 +287,12 @@ function getCalendarBusyDays(){
   return uniqueDays;
 }
 
-function startHours(){
+function startHours(duedate){
   var startDate= new Date();
-  var endDate = new Date(new Date().setYear(startDate.getFullYear()+1));
+  startDate.setHours(0,0,0,0);
+  //var endDate = new Date(new Date().setYear(startDate.getFullYear()+1));
+  var endDate = new Date(duedate);
+  endDate.setDate(endDate.getDate() + 1);
   
   var userEmail = getEmail();
   Logger.log(userEmail);
