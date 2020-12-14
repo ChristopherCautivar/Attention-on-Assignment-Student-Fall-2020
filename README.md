@@ -10,7 +10,7 @@ and coordination with other students &amp; faculty. This version is being worked
   * https://docs.google.com/spreadsheets/d/1ZTBkSj5Mqpn8WMCZXeg3gHh8EehHXZ3m0NJURoOSqp0/edit?usp=sharing
 * Code Documentation:
   * https://docs.google.com/document/d/12r6ejhImXnfsDUWUCCG3V_PRIGrdQtVxdYzwD-u5LY4/edit?usp=sharing
-* Feedback Forms:
+* Fall 2020 Feedback Forms:
   * https://docs.google.com/forms/d/1OnEsK3tUCh1EY3_ho_YKUzVrbgH6kJ8RBMjErYAq1N0/edit#responses
   * https://docs.google.com/forms/d/1CAShGtiULJHeNIeIxALHqNrsXMy709KacDNK8osz5JQ/edit#responses
 * Walkthrough Video:
@@ -22,6 +22,6 @@ and coordination with other students &amp; faculty. This version is being worked
 
 
 ## Fall 2020 Team Contact Information:
-Joseph Barker: @Joseph Barker on CSUMB Computer Science Slack, or jbarker@csumb.edu
-Christopher Cautivar: @Chris C on CSUMB Computer Science Slack, or ccautivar@csumb.edu
-Mimi Leon: @mimi_leon on CSUMB Computer Science Slack, or mleon@csumb.edu
+* Joseph Barker: @Joseph Barker on CSUMB Computer Science Slack, or jbarker@csumb.edu
+* Christopher Cautivar: @Chris C on CSUMB Computer Science Slack, or ccautivar@csumb.edu
+* Mimi Leon: @mimi_leon on CSUMB Computer Science Slack, or mleon@csumb.edu
