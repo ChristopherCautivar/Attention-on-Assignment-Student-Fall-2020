@@ -105,11 +105,13 @@ function updateProgressbar(lateAssignments, totalAssignments) {
     minutesDom : null,
     secondsDom : null,
     fillerDom : null,
+    sound: null,
     init : function(){
       var self = this;
       this.minutesDom = document.querySelector('#minutes');
       this.secondsDom = document.querySelector('#seconds');
       this.fillerDom = document.querySelector('#filler');
+      this.sound = document.querySelector('#sound');
       this.interval = setInterval(function(){
         self.intervalCallback.apply(self);
       }, 1000);
@@ -168,6 +170,7 @@ function updateProgressbar(lateAssignments, totalAssignments) {
     },
     timerComplete : function(){
       console.log("Done");
+      this.sound.play();
       alert("Time is up!");
       this.started = false;
       this.fillerHeight = 0;
@@ -212,9 +215,7 @@ function updateProgressbar(lateAssignments, totalAssignments) {
         $(".chart--num.task").html(countTask);
       });
     } else {
-      if(list.length <= 0){
-        list.text('No tasks');
-      }
+      list.text('No tasks');
     }
   }
   
