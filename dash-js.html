@@ -215,7 +215,9 @@ function updateProgressbar(lateAssignments, totalAssignments) {
         $(".chart--num.task").html(countTask);
       });
     } else {
-      list.text('No tasks');
+      if(list.length <= 0){
+        list.text('No tasks');
+      }
     }
   }
   
