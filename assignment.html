@@ -32,7 +32,9 @@
       // $(".datepicker").datepicker();
        var elems = document.querySelectorAll('.datepicker');
        var instances = M.Datepicker.init(elems);
-       
+       var todaysDate = new Date();
+       todaysDate.setDate(todaysDate.getDate() - 1);
+       instances.forEach(dPicker => dPicker.options.minDate = todaysDate);
        var elems = document.querySelectorAll('.timepicker');
        var instances = M.Timepicker.init(elems);
    } );
